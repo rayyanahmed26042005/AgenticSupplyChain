@@ -29,6 +29,8 @@ async def connect_to_mongo():
         logger.info("✅ Connected to MongoDB Atlas successfully!")
     except Exception as e:
         logger.error(f"❌ Failed to connect to MongoDB Atlas: {e}")
+        mongodb.client = None
+        mongodb.db = None
         raise e
 
 
