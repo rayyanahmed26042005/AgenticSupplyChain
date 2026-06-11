@@ -1,0 +1,30 @@
+# Use official Python runtime as base image
+FROM python:3.13-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies (build tools for potentially compiling some python libraries)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements file
+COPY backend/requirements.txt .
+
+# Modify numpy requirement for docker if needed (already updated in requirements.txt)
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy backend application source
+COPY backend/app ./app
+COPY backend/.env .env
+
+# Expose API port
+EXPOSE 8000
+
+# Set environment variable
+ENV PYTHONPATH=/app
+
+# Command to run the application
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,65 @@
+# ==========================================
+# Agentic Supply Chain Orchestrator gitignore
+# ==========================================
+
+# Environment variables & secrets (NEVER commit these!)
+.env
+.env.realtime
+.env.simulation
+.env.production
+.env.*.local
+.env.local
+!.env.example
+!.env.production.example
+
+# Python virtual environment & dependencies
+.venv/
+venv/
+env/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Python compiler & test caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Node (frontend) dependencies & build outputs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+frontend/dist/
+frontend/build/
+
+# Local databases & storage caches
+*.db
+*.sqlite3
+backend/data/uploads/test_*.csv
+backend/data/uploads/test_upload.csv
+logs/
+backend/logs/
+
+# Terraform local directory & states
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+*.tfvars
+*.tfvars.json
+
+# IDEs & System files
+.vscode/
+.idea/
+*.suo
+*.sln
+*.user
+.DS_Store
+Thumbs.db
+desktop.ini

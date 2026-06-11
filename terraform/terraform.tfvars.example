@@ -1,0 +1,17 @@
+# terraform/terraform.tfvars.example
+# Copy this file to terraform.tfvars and populate with your values
+
+aws_region     = "us-east-1"
+s3_bucket_name = "supply-chain-frontend-bucket-prod-26042005"
+
+# SSH public key content (e.g. cat ~/.ssh/id_rsa.pub)
+ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC..."
+
+# Managed database & cache secrets
+db_password = "SecureDatabasePassword123!"
+
+# MongoDB Atlas Persistence Connection String
+mongodb_uri = "mongodb+srv://<username>:<password>@cluster0.8vsvicb.mongodb.net/?retryWrites=true&w=majority"
+
+# Groq API Key for LLM Agents
+groq_api_key = "gsk_your_groq_api_key_here"
