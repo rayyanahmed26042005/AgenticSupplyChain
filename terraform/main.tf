@@ -234,7 +234,7 @@ resource "aws_key_pair" "deployer" {
 # EC2 Instance
 resource "aws_instance" "backend_server" {
   ami                  = var.ubuntu_ami_id
-  instance_type        = "t2.micro" # Free-Tier eligible instance
+  instance_type        = "t3.micro" # Free-Tier eligible instance
   subnet_id            = aws_subnet.public_a.id
   vpc_security_group_ids = [aws_security_group.ec2.id]
   key_name             = aws_key_pair.deployer.key_name
