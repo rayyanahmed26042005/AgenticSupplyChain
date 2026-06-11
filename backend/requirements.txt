@@ -12,6 +12,8 @@ openpyxl==3.1.5
 # ============= Database =============
 sqlalchemy[asyncio]==2.0.36
 aiosqlite==0.20.0
+motor==3.6.0
+pymongo==4.9.1
 
 # ============= Configuration =============
 pydantic-settings==2.7.1
