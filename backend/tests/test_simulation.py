@@ -109,3 +109,57 @@ async def test_csv_upload_compilation(tmp_path):
         assert len(result_data["metrics"]) == 1
         assert result_data["statistics"]["avg_demand"] == 120.0
         assert result_data["statistics"]["avg_inventory"] == 50.0
+
+
+@pytest.mark.asyncio
+async def test_add_row_mapping():
+    from app.core.data_manager import data_manager
+    import pandas as pd
+    
+    # 1. Populate mock dataset with specific capitalized columns
+    df = pd.DataFrame([
+        {
+            "Demand": 100.0,
+            "Inventory": 50.0,
+            "Defect Rate": 0.01,
+            "Lead Time": 5,
+            "Cost": 10.0,
+            "Revenue": 20.0
+        }
+    ])
+    
+    dataset_name = "test_mapping_dataset"
+    data_manager.current_datasets[dataset_name] = df
+    data_manager.data_cache[dataset_name] = {
+        "source": "csv",
+        "timestamp": "2026-06-11T00:00:00",
+        "rows": 1
+    }
+    
+    # 2. Add a row with lowercase/custom-cased keys
+    new_row = {
+        "demand": 150.0,
+        "inventory": 60.0,
+        "defect_rate": 0.02,
+        "lead_time": 6,
+        "cost": 11.0,
+        "revenue": 22.0
+    }
+    
+    try:
+        res = await data_manager.add_row_to_dataset(dataset_name, new_row, owner_id="guest")
+        assert res["status"] == "success"
+        
+        updated_df = data_manager.current_datasets[dataset_name]
+        # Should not have created new lowercase columns, should map to the existing ones
+        assert "demand" not in updated_df.columns
+        assert "inventory" not in updated_df.columns
+        assert len(updated_df) == 2
+        assert updated_df.loc[1, "Demand"] == 150.0
+        assert updated_df.loc[1, "Inventory"] == 60.0
+    finally:
+        # Cleanup
+        if dataset_name in data_manager.current_datasets:
+            del data_manager.current_datasets[dataset_name]
+        if dataset_name in data_manager.data_cache:
+            del data_manager.data_cache[dataset_name]

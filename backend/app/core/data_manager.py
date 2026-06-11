@@ -522,21 +522,45 @@ class DataManager:
                 ]
             }
             
+            def clean_str(s: str) -> str:
+                return str(s).strip().lower().replace("_", "").replace("-", "").replace(" ", "")
+
+            # Normalize all priority map templates
+            norm_priorities = {
+                group_key: [clean_str(name) for name in names]
+                for group_key, names in mapping_priorities.items()
+            }
+
             mapped_row = {}
             for key, val in row.items():
                 mapped = False
-                if key in mapping_priorities:
-                    # Look for the first column in df that matches any of the prioritized names case-insensitively and space-insensitively
-                    for prioritized_name in mapping_priorities[key]:
-                        p_clean = str(prioritized_name).strip().lower().replace("_", " ").replace("-", " ")
-                        for col in df.columns:
-                            col_clean = str(col).strip().lower().replace("_", " ").replace("-", " ")
-                            if col_clean == p_clean:
-                                mapped_row[col] = val
-                                mapped = True
-                                break
-                        if mapped:
+                key_clean = clean_str(key)
+                
+                # Check if the incoming key matches any prioritized group
+                matched_group = None
+                for group_key, clean_names in norm_priorities.items():
+                    if key_clean == clean_str(group_key) or key_clean in clean_names:
+                        matched_group = group_key
+                        break
+                
+                if matched_group:
+                    # Find a column in the dataframe that belongs to this group
+                    allowed_clean_names = norm_priorities[matched_group]
+                    for col in df.columns:
+                        if clean_str(col) in allowed_clean_names:
+                            mapped_row[col] = val
+                            mapped = True
                             break
+                
+                # If still not mapped, check case-insensitive match on actual columns
+                if not mapped:
+                    for col in df.columns:
+                        if clean_str(col) == key_clean:
+                            mapped_row[col] = val
+                            mapped = True
+                            break
+                            
+                # Fallback to key as-is
                 if not mapped:
                     mapped_row[key] = val
             
