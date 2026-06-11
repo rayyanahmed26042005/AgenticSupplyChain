@@ -171,7 +171,7 @@ resource "aws_db_instance" "postgres" {
   max_allocated_storage  = 100
   storage_type           = "gp3"
   engine                 = "postgres"
-  engine_version         = "15.4"
+  engine_version         = "15"
   instance_class         = "db.t4g.micro" # Free Tier eligible instance type
   db_name                = "supply_chain"
   username               = "postgres"
