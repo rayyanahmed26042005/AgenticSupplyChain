@@ -59,7 +59,7 @@ def upload_directory(path, bucket):
                 success = False
                 
     if success:
-        print("\n✅ Frontend successfully deployed to S3!")
+        print("\n[SUCCESS] Frontend successfully deployed to S3!")
     return success
 
 if __name__ == "__main__":
