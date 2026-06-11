@@ -354,16 +354,53 @@ resource "aws_cloudfront_origin_access_control" "oac" {
 
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "frontend" {
+  # S3 Bucket Origin
   origin {
     domain_name              = aws_s3_bucket.frontend.bucket_regional_domain_name
     origin_id                = "S3-Frontend"
     origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
   }
 
+  # ALB Origin (Backend API)
+  origin {
+    domain_name = aws_lb.main.dns_name
+    origin_id   = "ALB-Backend"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
 
+  # Route API requests to ALB origin
+  ordered_cache_behavior {
+    path_pattern     = "/api/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "ALB-Backend"
+
+    forwarded_values {
+      query_string = true
+      headers      = ["*"]
+
+      cookies {
+        forward = "all"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+  }
+
+  # Default route to S3 bucket (Frontend static assets)
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
