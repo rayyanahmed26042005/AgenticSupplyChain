@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy backend application source
 COPY backend/app ./app
-COPY backend/.env .env
+COPY .env.example .env
 
 # Expose API port
 EXPOSE 8000
