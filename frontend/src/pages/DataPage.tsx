@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { dataService } from '../services/dataService';
 import { simulationService } from '../services/simulationService';
-import { Upload, Database, FileText, Table, Trash2, Plus, RefreshCw, FileSpreadsheet } from 'lucide-react';
+import { Upload, FileText, Table, Trash2, Plus, RefreshCw, FileSpreadsheet } from 'lucide-react';
 import { useSimulationStore } from '../store/simulationStore';
 
 export default function DataPage() {
@@ -159,7 +159,7 @@ export default function DataPage() {
         revenue: Number(rowData.revenue),
       };
 
-      const res: any = await dataService.addManualRecord(datasetName, record);
+      await dataService.addManualRecord(datasetName, record);
       setRowMsg(`✅ Row added to dataset "${datasetName}" successfully!`);
       
       if (targetDataset === 'new') {
